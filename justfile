@@ -13,7 +13,7 @@ test:
 
 # Run repository maintenance contract tests
 maintenance-test:
-    {{python}} -m unittest scripts.test_agent_detection_manifest_check scripts.test_changelog scripts.test_config_reference_check scripts.test_docs_translation_parity scripts.test_hermes_integration_asset scripts.test_package_windows_conpty scripts.test_preview scripts.test_release scripts.test_unix_installer scripts.test_vendor_libghostty_vt scripts.test_vendor_portable_pty scripts.test_windows_cross scripts.test_windows_input
+    {{python}} -m unittest scripts.test_agent_detection_manifest_check scripts.test_api_perf scripts.test_changelog scripts.test_config_reference_check scripts.test_docs_translation_parity scripts.test_hermes_integration_asset scripts.test_package_windows_conpty scripts.test_preview scripts.test_release scripts.test_unix_installer scripts.test_vendor_libghostty_vt scripts.test_vendor_portable_pty scripts.test_windows_cross scripts.test_windows_input
     bun test scripts/release-workflows.test.ts
 
 # Local interactive Windows Terminal input qualification (never runs in normal CI).
@@ -107,6 +107,11 @@ bench-api-fairness:
 bench-release-smoke:
     cargo build --release --locked
     scripts/release_perf_smoke.sh "${CARGO_TARGET_DIR:-target}/release/herdr"
+
+# ~3 minute API latency, event delivery, and idle CPU comparison against the
+# release this branch is based on; builds both under target/api-perf
+bench-api *args:
+    {{python}} scripts/api_perf.py {{args}}
 
 # Test public documentation snapshot and release lifecycle tooling
 docs-contract-test:
