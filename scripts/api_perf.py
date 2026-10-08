@@ -38,8 +38,10 @@ rust-toolchain.toml, Zig 0.16, just, perl, and Python 3.9 or newer. On
 macOS without Nix, Zig needs the Xcode command line tools for nmedit.
 
 The release smoke test (`just bench-release-smoke`)
-covers render and fan-out CPU through a TUI client; this suite covers the
-API socket path, which has no TUI attached.
+covers render and fan-out CPU through a TUI client, and
+`just bench-api-fairness` times the app loop draining queued requests
+in-process. This suite covers the API socket path from outside the
+server, which neither of them reaches.
 """
 
 from __future__ import annotations

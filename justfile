@@ -108,13 +108,11 @@ bench-release-smoke:
     cargo build --release --locked
     scripts/release_perf_smoke.sh "${CARGO_TARGET_DIR:-target}/release/herdr"
 
-# ~3 minute API latency, event delivery, and idle CPU comparison against the
-# release this branch is based on; builds both under target/api-perf
+# ~3 minute API socket comparison against the base release tag (scripts/api_perf.py)
 bench-api *args:
     {{python}} scripts/api_perf.py {{args}}
 
-# ~1 minute single-round check while iterating; trust only the deterministic
-# metrics (late write, events, burst, syscalls per request) from it
+# ~1 minute API socket check for dev loops; trust only its deterministic metrics
 bench-api-quick *args:
     {{python}} scripts/api_perf.py --rounds 1 --seconds 3 --requests 50 --late-requests 10 --events 10 --burst 10 {{args}}
 
