@@ -86,15 +86,27 @@
         {
           default = pkgs.mkShell {
             name = "herdr-dev";
-            packages = with pkgs; [
-              cargo-nextest
-              cmake
-              just
-              ninja
-              pkg-config
-              rustToolchain
-              zig_0_16
-            ];
+            packages =
+              with pkgs;
+              [
+                cargo-nextest
+                cmake
+                just
+                ninja
+                pkg-config
+                # On macOS /usr/bin/python3 is an xcrun shim, which the
+                # xcbuild xcrun below cannot resolve.
+                python3
+                rustToolchain
+                zig_0_16
+              ]
+              # The vendored libghostty-vt build runs nmedit through xcrun.
+              # Inside this shell xcrun searches the Nix SDK rather than the
+              # system tools, so it needs the same toolchain the package uses.
+              ++ lib.optionals stdenv.hostPlatform.isDarwin [
+                cctools
+                xcbuild
+              ];
 
             env = {
               LIBGHOSTTY_VT_OPTIMIZE = "Debug";
