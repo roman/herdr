@@ -24,7 +24,20 @@ times the CPU of the published binary. Pass --candidate-bin or
 --baseline-bin to measure an existing binary instead.
 
 Rounds alternate the order of the two builds so that drift in machine load
-spreads over both. The release smoke test (`just bench-release-smoke`)
+spreads over both.
+
+For a dev loop, run `just bench-api-quick` after each change. It takes
+about a minute once both builds are cached, and its late write, event,
+burst, and syscall figures are stable to about 1% between identical
+builds. Sub-millisecond latencies and CPU vary by up to 30% between
+identical builds, so confirm a change in those with `just bench-api`,
+which runs two rounds over longer windows.
+
+Run it inside `nix develop`, or outside Nix with the toolchain from
+rust-toolchain.toml, Zig 0.16, just, perl, and Python 3.9 or newer. On
+macOS without Nix, Zig needs the Xcode command line tools for nmedit.
+
+The release smoke test (`just bench-release-smoke`)
 covers render and fan-out CPU through a TUI client; this suite covers the
 API socket path, which has no TUI attached.
 """

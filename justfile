@@ -113,6 +113,11 @@ bench-release-smoke:
 bench-api *args:
     {{python}} scripts/api_perf.py {{args}}
 
+# ~1 minute single-round check while iterating; trust only the deterministic
+# metrics (late write, events, burst, syscalls per request) from it
+bench-api-quick *args:
+    {{python}} scripts/api_perf.py --rounds 1 --seconds 3 --requests 50 --late-requests 10 --events 10 --burst 10 {{args}}
+
 # Test public documentation snapshot and release lifecycle tooling
 docs-contract-test:
     bun test ./scripts/docs
